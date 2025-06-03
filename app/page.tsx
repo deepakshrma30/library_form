@@ -1,6 +1,5 @@
 import ContactForm from "@/components/contactForm";
 import Info from "@/components/Info";
-import Image from "next/image";
 
 export default function Home() {
   return (

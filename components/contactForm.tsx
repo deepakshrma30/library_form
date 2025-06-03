@@ -20,6 +20,8 @@ const ContactForm = () => {
     image2: null as File | null,
   });
 
+  console.log(uploadedImages, "upload");
+
   const [imagePreviews, setImagePreviews] = useState({
     image1: null as string | null,
     image2: null as string | null,
