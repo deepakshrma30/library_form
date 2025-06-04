@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         startDate: "sdsds",
       });
 
-      const pdf = await generateInvoicePdf(htmltemplate);
+      const pdfBuffer = Buffer.from(await generateInvoicePdf(htmltemplate));
 
       const mailOptions = {
         from: process.env.NEXT_EMAIL_ID,
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         attachments: [
           {
             filename: "invoice.pdf",
-            content: pdf,
+            content: pdfBuffer,
             contentType: "application/pdf",
           },
         ],
