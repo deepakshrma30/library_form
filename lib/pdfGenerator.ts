@@ -9,7 +9,9 @@ export async function generateInvoicePdf(html: string) {
     args: chromium.args,
     // args: puppeteer.defaultArgs(),
     defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(),
+    executablePath: await chromium.executablePath(
+      "https://github.com/Sparticuz/chromium/releases/download/v121.0.0/chromium-v121.0.0-pack.tar"
+    ),
     headless: chromium.headless,
   });
 
