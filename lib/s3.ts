@@ -36,11 +36,7 @@ export const uploadFileToS3 = async (file: File) => {
   };
 };
 
-export async function uploadPdfToS3(buffer: Buffer) {
-  const fileName = `invoices/${Date.now()}-${Math.floor(
-    Math.random() * 100000
-  )}.pdf`;
-
+export async function uploadPdfToS3(buffer: Buffer, fileName: string) {
   const command = new PutObjectCommand({
     Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
     Key: fileName,
