@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { DeleteObjectCommand, S3 } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand, S3 } from "@aws-sdk/client-s3";
 
 // Create reusable S3 instance
 const s3 = new S3({
@@ -35,6 +35,24 @@ export const uploadFileToS3 = async (file: File) => {
     url: `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.ap-south-1.amazonaws.com/${key}`,
   };
 };
+
+export async function uploadPdfToS3(buffer: Buffer) {
+  const fileName = `invoices/${Date.now()}-${Math.floor(
+    Math.random() * 100000
+  )}.pdf`;
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
+    Key: fileName,
+    Body: buffer,
+    ContentType: "application/pdf",
+    // ACL: "public-read", // If you want to access it via URL directly
+  });
+
+  await s3.send(command);
+
+  return `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.ap-south-1.amazonaws.com/${fileName}`;
+}
 
 export function getS3Url(file_key: string): string {
   return `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.ap-south-1.amazonaws.com/${file_key}`;
