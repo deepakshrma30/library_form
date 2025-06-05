@@ -6,15 +6,22 @@ export async function generateInvoicePdf(html: string) {
   //   ? await chromium.executablePath()
   //   : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
   const browser = await puppeteer.launch({
-    args: chromium.args,
+    // args: chromium.args,
     // args: puppeteer.defaultArgs(),
-    defaultViewport: chromium.defaultViewport,
+    // defaultViewport: chromium.defaultViewport,
     // executablePath,
     // executablePath: await chromium.executablePath(
     //   "https://github.com/Sparticuz/chromium/releases/download/v121.0.0/chromium-v121.0.0-pack.tar"
     // ),
-    executablePath: await chromium.executablePath(),
+    // executablePath: await chromium.executablePath(),
+    // headless: chromium.headless,
+    args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(
+      `https://github.com/Sparticuz/chromium/releases/download/v129.0.0/chromium-v129.0.0-pack.tar`
+    ),
     headless: chromium.headless,
+    // ignoreDefaultArgs: true,
   });
 
   const page = await browser.newPage();
