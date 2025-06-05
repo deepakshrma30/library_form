@@ -2,9 +2,9 @@ import chromium from "@sparticuz/chromium-min";
 import puppeteer from "puppeteer-core";
 
 export async function generateInvoicePdf(html: string) {
-  const executablePath = false
-    ? await chromium.executablePath()
-    : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+  // const executablePath = false
+  //   ? await chromium.executablePath()
+  //   : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
   const browser = await puppeteer.launch({
     // args: chromium.args,
     // args: puppeteer.defaultArgs(),
