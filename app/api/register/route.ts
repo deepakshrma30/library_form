@@ -3,7 +3,9 @@ import { generateInvoiceHtml } from "@/lib/invocietemplate";
 import { generateInvoicePdf } from "@/lib/pdfGenerator";
 import { NextRequest, NextResponse } from "next/server";
 import { format, addMonths } from "date-fns";
-
+export const config = {
+  runtime: "nodejs",
+};
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
