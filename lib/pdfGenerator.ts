@@ -2,13 +2,14 @@ import chromium from "@sparticuz/chromium-min";
 import puppeteer from "puppeteer-core";
 
 export async function generateInvoicePdf(html: string) {
-  //   const executablePath = true
-  //     ? await chromium.executablePath()
-  //     : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+  // const executablePath = false
+  //   ? await chromium.executablePath()
+  //   : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
   const browser = await puppeteer.launch({
     args: chromium.args,
     // args: puppeteer.defaultArgs(),
     defaultViewport: chromium.defaultViewport,
+    // executablePath,
     executablePath: await chromium.executablePath(
       "https://github.com/Sparticuz/chromium/releases/download/v121.0.0/chromium-v121.0.0-pack.tar"
     ),
@@ -22,7 +23,7 @@ export async function generateInvoicePdf(html: string) {
   const pdfBuffer = await page.pdf({
     format: "A4",
     printBackground: true,
-    margin: { top: "20px", bottom: "20px", left: "20px", right: "20px" },
+    // margin: { top: "20px", bottom: "20px", left: "20px", right: "20px" },
   });
 
   await browser.close();

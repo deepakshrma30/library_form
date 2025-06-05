@@ -38,8 +38,8 @@ const Info = () => {
             <div className="flex items-start gap-2 sm:gap-3">
               <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mt-1 flex-shrink-0" />
               <div>
-                <p>C2, 4th Block, VB Park, Kakkanadu,</p>
-                <p>Kochi, Kerala, India</p>
+                <p>Lucky garden, 35-A Dalipgarh, near Babyal,</p>
+                <p>Ambala Cantt, Haryana 133005</p>
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
@@ -52,14 +52,19 @@ const Info = () => {
         {/* Company Description */}
         <div className="pt-4 sm:pt-8">
           <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">
-            App4Church is a digital solution that streamlines church operations
-            and data handling.
+            Self Study — A smart library system built for efficient management
+            and focused learning.
           </p>
         </div>
 
         {/* Social Media Icons */}
         <div className="flex gap-3 sm:gap-4 pt-2 sm:pt-4">
-          <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+          <a
+            href="https://www.instagram.com/self.studylibrary/"
+            target="_blank"
+          >
+            <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+          </a>
         </div>
       </div>
     </div>

@@ -2,18 +2,24 @@ import { sendInvoiceEmail } from "@/lib/emailService";
 import { generateInvoiceHtml } from "@/lib/invocietemplate";
 import { generateInvoicePdf } from "@/lib/pdfGenerator";
 import { NextRequest, NextResponse } from "next/server";
+import { format, addMonths } from "date-fns";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     if (body) {
-      const paymentProof = body.paymentProof;
-      console.log(paymentProof, "paymentproffs");
+      const startDate = format(new Date(), "dd MMM yyyy");
+      const endDate = format(addMonths(new Date(), 1), "dd MMM yyyy");
       const htmltemplate = generateInvoiceHtml({
-        amount: "455",
-        endDate: "sdsds",
-        imageUrl: paymentProof,
-        startDate: "sdsds",
+        amount: "1000",
+        endDate,
+        imageUrl: body.paymentProof,
+        startDate,
+        email: body.email,
+        phone: body.phone,
+        username: body.name,
+        cabin: body.cabin,
+        aadharImageUrl: body.aadharCard,
       });
 
       const pdfBuffer = Buffer.from(await generateInvoicePdf(htmltemplate));
@@ -21,8 +27,9 @@ export async function POST(req: NextRequest) {
       const mailOptions = {
         from: process.env.NEXT_EMAIL_ID,
         to: body.email,
+        cc: process.env.NEXT_EMAIL_ID,
         subject: "Your Library Invoice",
-        text: "Please find your subscription invoice attached.",
+        text: "Please find your library invoice attached.",
         attachments: [
           {
             filename: "invoice.pdf",
@@ -34,12 +41,11 @@ export async function POST(req: NextRequest) {
 
       await sendInvoiceEmail(mailOptions);
       return NextResponse.json(
-        { message: "Mail Sent Successfully" },
+        { message: "Mail Sent Successfully", status: 200 },
         { status: 200 }
       );
     }
   } catch (error) {
-    console.log(error, "error");
     return NextResponse.json({ message: error }, { status: 400 });
   }
 }

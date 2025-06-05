@@ -1,15 +1,7 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
-import {
-  CheckCircle2Icon,
-  Mail,
-  Phone,
-  Table,
-  Upload,
-  User,
-  X,
-} from "lucide-react";
+import { Loader2, Mail, Phone, Table, Upload, User, X } from "lucide-react";
 import { Input } from "./ui/input";
 import { z } from "zod";
 import { formSchema } from "@/lib/schema";
@@ -25,13 +17,16 @@ import {
 } from "@/components/ui/form";
 import { uploadFileToS3 } from "@/lib/s3";
 import Image from "next/image";
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+
+import { isNumber, isValidInput } from "@/lib/validation";
+import { toast } from "sonner";
 
 type FormData = z.infer<typeof formSchema>;
 
 const ContactForm = () => {
   const fileInputRef1 = useRef<HTMLInputElement>(null);
   const fileInputRef2 = useRef<HTMLInputElement>(null);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -77,30 +72,34 @@ const ContactForm = () => {
   };
 
   const onSubmit = async (values: FormData) => {
-    console.log(values, "values");
     try {
+      setSubmitting(true);
       const res = await fetch("/api/register", {
         method: "POST",
         body: JSON.stringify(values),
       });
       if (res?.status === 200) {
-        <Alert>
-          <CheckCircle2Icon />
-          <AlertTitle>Form Submitted</AlertTitle>
-          <AlertDescription>
-            All Details will be sent to your registered email.
-          </AlertDescription>
-        </Alert>;
+        toast("Registration Successful", {
+          description: "We've sent the details to your registered email!",
+          position: "top-center",
+        });
+        form.reset();
+        setSubmitting(false);
+        if (fileInputRef1.current) fileInputRef1.current.value = "";
+        if (fileInputRef2.current) fileInputRef2.current.value = "";
       }
     } catch (error) {
       console.error(error);
+      setSubmitting(false);
+      if (fileInputRef1.current) fileInputRef1.current.value = "";
+      if (fileInputRef2.current) fileInputRef2.current.value = "";
     }
   };
   return (
     <div className="xl:w-3/5 p-4 sm:p-6 lg:p-8 xl:p-12 min-h-screen">
       <div className="max-w-2xl mx-auto">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
-          Library <span className="text-orange-400">Connect</span>
+          Self Study <span className="text-orange-400">Library</span>
         </h2>
         <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">
           Fill out the form below to begin your enrollment process.
@@ -122,6 +121,12 @@ const ContactForm = () => {
                           className="bg-gray-800 border-gray-700 text-white pl-10 focus:border-orange-400 focus:ring-orange-400 h-11"
                           placeholder="Enter your name"
                           {...field}
+                          onChange={(e) => {
+                            if (isValidInput(e.target.value)) {
+                              field.onChange(e);
+                            }
+                          }}
+                          maxLength={30}
                         />
                       </div>
                     </FormControl>
@@ -146,6 +151,12 @@ const ContactForm = () => {
                           className="bg-gray-800 border-gray-700 text-white pl-10 focus:border-orange-400 focus:ring-orange-400 h-11"
                           placeholder="Enter Cabin Alloted"
                           {...field}
+                          onChange={(e) => {
+                            if (isNumber(e.target.value)) {
+                              field.onChange(e);
+                            }
+                          }}
+                          maxLength={2}
                         />
                       </div>
                     </FormControl>
@@ -174,6 +185,11 @@ const ContactForm = () => {
                           className="bg-gray-800 border-gray-700 text-white pl-10 focus:border-orange-400 focus:ring-orange-400 h-11"
                           placeholder="Email Address"
                           {...field}
+                          onChange={(e) => {
+                            if (isValidInput(e.target.value)) {
+                              field.onChange(e);
+                            }
+                          }}
                         />
                       </div>
                     </FormControl>
@@ -198,6 +214,12 @@ const ContactForm = () => {
                           className="bg-gray-800 border-gray-700 text-white pl-10 focus:border-orange-400 focus:ring-orange-400 h-11"
                           placeholder="Phone Number"
                           {...field}
+                          onChange={(e) => {
+                            if (isNumber(e.target.value)) {
+                              field.onChange(e);
+                            }
+                          }}
+                          maxLength={10}
                         />
                       </div>
                     </FormControl>
@@ -371,8 +393,16 @@ const ContactForm = () => {
               <Button
                 className="w-full sm:w-48 bg-orange-400 hover:bg-orange-500 text-white font-semibold py-3 sm:py-4 rounded-lg transition-colors text-sm sm:text-base"
                 type="submit"
+                disabled={submitting}
               >
-                Submit
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit"
+                )}
               </Button>
             </div>
           </form>
