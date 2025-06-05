@@ -41,10 +41,6 @@ export async function POST(req: NextRequest) {
           },
         ],
       };
-      const isMobile = req.headers.get("user-agent")?.includes("iPhone");
-      if (isMobile) {
-        mailOptions.attachments = []; // test without PDF
-      }
 
       await sendInvoiceEmail(mailOptions);
       return NextResponse.json(
