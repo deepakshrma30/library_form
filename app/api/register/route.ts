@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
       const pdfBuffer = Buffer.from(await generateInvoicePdf(htmltemplate));
       const pdfurl = await uploadPdfToS3(pdfBuffer);
-      let mailOptions = {
+      const mailOptions = {
         from: process.env.NEXT_EMAIL_ID,
         to: body.email,
         cc: process.env.NEXT_EMAIL_ID,
