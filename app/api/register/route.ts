@@ -3,7 +3,7 @@ import { generateInvoiceHtml } from "@/lib/invocietemplate";
 import { generateInvoicePdf } from "@/lib/pdfGenerator";
 import { NextRequest, NextResponse } from "next/server";
 import { format, addMonths } from "date-fns";
-import { uploadPdfToS3 } from "@/lib/s3";
+
 export const config = {
   runtime: "nodejs",
 };
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       });
 
       const pdfBuffer = Buffer.from(await generateInvoicePdf(htmltemplate));
-      const pdfurl = await uploadPdfToS3(pdfBuffer);
+
       const mailOptions = {
         from: process.env.NEXT_EMAIL_ID,
         to: body.email,
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         attachments: [
           {
             filename: "invoice.pdf",
-            content: pdfurl,
+            content: pdfBuffer,
             contentType: "application/pdf",
           },
         ],
