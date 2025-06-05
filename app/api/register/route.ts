@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
       const pdfBuffer = Buffer.from(await generateInvoicePdf(htmltemplate));
 
-      const mailOptions = {
+      let mailOptions = {
         from: process.env.NEXT_EMAIL_ID,
         to: body.email,
         cc: process.env.NEXT_EMAIL_ID,
@@ -40,6 +40,10 @@ export async function POST(req: NextRequest) {
           },
         ],
       };
+      const isMobile = req.headers.get("user-agent")?.includes("iPhone");
+      if (isMobile) {
+        mailOptions.attachments = []; // test without PDF
+      }
 
       await sendInvoiceEmail(mailOptions);
       return NextResponse.json(
