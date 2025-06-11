@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { DeleteObjectCommand, PutObjectCommand, S3 } from "@aws-sdk/client-s3";
-
+import imageCompression from "browser-image-compression";
 // Create reusable S3 instance
 const s3 = new S3({
   region: "ap-south-1",
@@ -11,11 +11,17 @@ const s3 = new S3({
 });
 
 export const uploadFileToS3 = async (file: File) => {
+  const compressedFile = await imageCompression(file, {
+    maxSizeMB: 1, // You can adjust this based on your limits
+    maxWidthOrHeight: 1024,
+    useWebWorker: true,
+  });
+
   const res = await fetch("/api/upload", {
     method: "POST",
     body: JSON.stringify({
-      fileName: file.name,
-      fileType: file.type,
+      fileName: compressedFile.name,
+      fileType: compressedFile.type,
     }),
   });
 
@@ -25,9 +31,9 @@ export const uploadFileToS3 = async (file: File) => {
   await fetch(url, {
     method: "PUT",
     headers: {
-      "Content-Type": file.type,
+      "Content-Type": compressedFile.type,
     },
-    body: file,
+    body: compressedFile,
   });
 
   return {
